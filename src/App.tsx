@@ -1,26 +1,27 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import "./styles/App.css";
+import { useState, useEffect } from "react";
+import Nav from "./Nav";
+import Main from "./Main";
+import { getCookie } from "./utils";
 
-function App() {
+export default function App() {
+  const [username, setUsername] = useState<string>("");
+  const [token, setToken] = useState<string>("");
+
+  useEffect(() => {
+    const usernameFromCookie = getCookie("username");
+    const tokenFromCookie = getCookie("token");
+
+    if (usernameFromCookie && tokenFromCookie) {
+      setUsername(usernameFromCookie);
+      setToken(tokenFromCookie);
+    }
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <Nav username={username} setUsername={setUsername} setToken={setToken} />
+      <Main setUsername={setUsername} setToken={setToken} />
+    </>
   );
 }
-
-export default App;
