@@ -1,5 +1,6 @@
 {
-    "API_URL": "http://127.0.0.1",
-    "API_PORT": "8000",
-    "LOGIN_ENDPOINT": "/auth/token"
+  "API_URL": "http://127.0.0.1",
+  "API_PORT": "8000",
+  "LOGIN_ENDPOINT": "/auth/token",
+  "REGISTER_ENDPOINT": "/auth/register"
 }
