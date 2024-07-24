@@ -1,0 +1,47 @@
+.chats {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  border-radius: 0.5rem;
+  border: 1px solid black;
+  width: 40vw;
+}
+
+.chats > div:not(div:last-of-type) {
+  border-bottom: 1px solid black;
+}
+
+.chats-header {
+  font-size: 1.25rem;
+  font-weight: 600;
+  padding: 1rem;
+}
+
+.chats-list > div:not(div:last-of-type) {
+  border-bottom: 1px solid black;
+}
+
+.chats-list-chat {
+  padding: 0.75rem;
+}
+
+.chats-create {
+  padding: 0.75rem;
+}
+
+.chats-create-btn {
+  border-radius: 0.5rem;
+  border: 1px solid black;
+  transition: 0.15s;
+  cursor: pointer;
+  padding: 0.5rem;
+  text-align: center;
+}
+
+.chats-create-btn:hover {
+  box-shadow: 0 0 0 1px black inset;
+}
+
+.chats-create-btn > a {
+  color: inherit;
+  text-decoration: unset;
+}
