@@ -7,6 +7,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import "./styles/ChatCreate.css";
 import configData from "./config.json";
+import { getErrorFromResponse } from "./utils";
 
 interface ChatCreateProps {
   token: string;
@@ -46,17 +47,7 @@ export default function ChatCreate({ token }: ChatCreateProps) {
         navigate("/");
       } else {
         const resData = await res.json();
-        type resDetailType = string | Array<{ msg: string }>;
-        const resDataDetail = resData.detail as any as resDetailType;
-        {
-          if (Array.isArray(resDataDetail)) {
-            setInputNameError(resData.detail[0]["msg"]);
-          } else if (typeof resDataDetail == "string") {
-            setInputNameError(resData.detail);
-          } else {
-            setInputNameError("There was an error.");
-          }
-        }
+        setInputNameError(getErrorFromResponse(resData));
       }
     })();
   };

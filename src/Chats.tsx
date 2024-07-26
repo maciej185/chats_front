@@ -28,7 +28,10 @@ async function getChats(token: string) {
 }
 
 export default function Chats({ token }: ChatProps) {
-  const [chats, setChats] = useState<Array<{ name: string }> | null>(null);
+  const [chats, setChats] = useState<Array<{
+    name: string;
+    chat_id: number;
+  }> | null>(null);
   const [chatsError, setChatsError] = useState<string | null>(null);
   const navigate = useNavigate();
 
@@ -53,7 +56,9 @@ export default function Chats({ token }: ChatProps) {
         {chats
           ? chats.map((chat_object, ind) => (
               <div key={`chat-${ind}`} className="chats-list-chat">
-                {chat_object.name}
+                <Link to={`/chat/${chat_object.chat_id}`}>
+                  {chat_object.name}
+                </Link>
               </div>
             ))
           : chatsError}
