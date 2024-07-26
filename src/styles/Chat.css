@@ -97,3 +97,10 @@
   color: gray;
   cursor: not-allowed;
 }
+
+.chat-error {
+  padding: 1rem;
+  border-radius: 0.5rem;
+  border: 1px solid black;
+  color: darkred;
+}

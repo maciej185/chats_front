@@ -13,8 +13,8 @@ export default function Nav({ username, setUsername, setToken }: NavProps) {
     setUsername(null);
     setToken(null);
 
-    deleteCookie("username");
-    deleteCookie("token");
+    sessionStorage.removeItem("username");
+    sessionStorage.removeItem("token");
   }
 
   return (

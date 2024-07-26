@@ -9,9 +9,15 @@ interface MainProps {
   setUsername: CallableFunction;
   setToken: CallableFunction;
   token: string;
+  username: string;
 }
 
-export default function Main({ setUsername, setToken, token }: MainProps) {
+export default function Main({
+  setUsername,
+  setToken,
+  token,
+  username,
+}: MainProps) {
   return (
     <Routes>
       <Route path="/" element={<Chats token={token} />} />
@@ -24,7 +30,10 @@ export default function Main({ setUsername, setToken, token }: MainProps) {
         element={<Register setUsername={setUsername} setToken={setToken} />}
       />
       <Route path="/create" element={<ChatCreate token={token} />} />
-      <Route path="/chat/:chat_id" element={<Chat token={token} />} />
+      <Route
+        path="/chat/:chat_id"
+        element={<Chat token={token} username={username} />}
+      />
     </Routes>
   );
 }
