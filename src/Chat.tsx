@@ -13,6 +13,7 @@ import { getErrorFromResponse } from "./utils";
 
 interface ChatProps {
   token: string;
+  username: string;
 }
 
 interface chatInfoInterface {
@@ -54,7 +55,17 @@ async function fetchChatData(
   }
 }
 
-export default function Chat({ token }: ChatProps) {
+function checkIfcurrentUserIsChatMember(
+  currentUsersUsername: string,
+  chatInfo: chatInfoInterface
+): boolean {
+  chatInfo.members.forEach((chatMember) => {
+    if (chatMember.user.username === currentUsersUsername) return true;
+  });
+  return false;
+}
+
+export default function Chat({ token, username }: ChatProps) {
   const [chatInfo, setChatInfo] = useState<chatInfoInterface | null>(null);
   const [chatInfoError, setChatInfoError] = useState<string | null>(null);
   const [inputMessage, setInputMessage] = useState<string>("");
@@ -62,6 +73,8 @@ export default function Chat({ token }: ChatProps) {
     useState<MouseEventHandler | undefined>(undefined);
   const [sendBtnStateClassName, setSendBtnStateClassName] =
     useState<string>("inactive");
+  const [currentUserIsChatMember, setCurrentUserIsChatMember] =
+    useState<boolean>(true);
   const { chat_id } = useParams<string>();
   const navigate = useNavigate();
 
@@ -84,19 +97,24 @@ export default function Chat({ token }: ChatProps) {
       navigate("/login");
       return;
     }
-    (async function () {
-      await fetchChatData(
-        Number(chat_id),
-        token,
-        setChatInfo,
-        chatInfoError,
-        setChatInfoError
+    if (!chatInfo)
+      (async function () {
+        await fetchChatData(
+          Number(chat_id),
+          token,
+          setChatInfo,
+          chatInfoError,
+          setChatInfoError
+        );
+      })();
+    if (chatInfo)
+      setCurrentUserIsChatMember(
+        checkIfcurrentUserIsChatMember(username, chatInfo)
       );
-    })();
     setSendBtnClickHandlerFunction(sendBtnClickHandler);
-  }, []);
+  }, [token]);
 
-  return (
+  return currentUserIsChatMember ? (
     <div className="chat">
       <div className="chat-members">
         {chatInfo ? (
@@ -146,5 +164,7 @@ export default function Chat({ token }: ChatProps) {
         </div>
       </div>
     </div>
+  ) : (
+    <div className="chat-error">You are not a member of this chat!</div>
   );
 }
