@@ -25,6 +25,31 @@
   border-bottom: 1px solid black;
 }
 
+.chat-members-add > a {
+  color: inherit;
+}
+
+.chat-members-add-btn {
+  border-radius: 0.5rem;
+  border: 1px solid gray;
+  transition: 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 3rem;
+  cursor: pointer;
+}
+
+.chat-members-add-btn:hover {
+  box-shadow: 0 0 0 1px gray inset;
+  color: gray;
+}
+
+.chat-members-add-btn > svg {
+  height: 1rem;
+  width: 1rem;
+}
+
 .chat-members-member > div:not(div:last-of-type) {
   margin-bottom: 0.5rem;
 }
