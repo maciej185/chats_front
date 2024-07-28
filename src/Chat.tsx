@@ -1,5 +1,5 @@
 import "./styles/Chat.css";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import {
   useState,
   useEffect,
@@ -16,17 +16,20 @@ interface ChatProps {
   username: string;
 }
 
-interface chatInfoInterface {
+export type chatMembers = Array<{
+  user_id: number;
+  user: {
+    username: string;
+    profile: { first_name: string; last_name: string };
+  };
+}>;
+
+export interface chatInfoInterface {
   name: string;
-  members: Array<{
-    user: {
-      username: string;
-      profile: { first_name: string; last_name: string };
-    };
-  }>;
+  members: chatMembers;
 }
 
-async function fetchChatData(
+export async function fetchChatData(
   chat_id: number,
   token: string,
   ChatInfoSetter: CallableFunction,
@@ -55,11 +58,11 @@ async function fetchChatData(
   }
 }
 
-function checkIfcurrentUserIsChatMember(
+export function checkIfcurrentUserIsChatMember(
   currentUsersUsername: string,
-  chatInfo: chatInfoInterface
+  members: chatMembers
 ): boolean {
-  chatInfo.members.forEach((chatMember) => {
+  members.forEach((chatMember) => {
     if (chatMember.user.username === currentUsersUsername) return true;
   });
   return false;
@@ -109,7 +112,7 @@ export default function Chat({ token, username }: ChatProps) {
       })();
     if (chatInfo)
       setCurrentUserIsChatMember(
-        checkIfcurrentUserIsChatMember(username, chatInfo)
+        checkIfcurrentUserIsChatMember(username, chatInfo.members)
       );
     setSendBtnClickHandlerFunction(sendBtnClickHandler);
   }, [token]);
@@ -117,6 +120,25 @@ export default function Chat({ token, username }: ChatProps) {
   return currentUserIsChatMember ? (
     <div className="chat">
       <div className="chat-members">
+        <div className="chat-members-add">
+          <Link
+            to={`/chat/add_member/${chat_id}`}
+            state={{ chat_name: chatInfo?.name }}
+          >
+            <div className="chat-members-add-btn">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="bi bi-plus-lg"
+                viewBox="0 0 16 16"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2"
+                />
+              </svg>
+            </div>
+          </Link>
+        </div>
         {chatInfo ? (
           chatInfo.members.map((chatMemberObject, ind) => (
             <div
@@ -154,7 +176,6 @@ export default function Chat({ token, username }: ChatProps) {
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              fill="currentColor"
               className="bi bi-send"
               viewBox="0 0 16 16"
             >

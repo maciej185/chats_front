@@ -4,6 +4,7 @@ import Chats from "./Chats";
 import Register from "./Register";
 import ChatCreate from "./ChatCreate";
 import Chat from "./Chat";
+import ChatAddMember from "./ChatAddMember";
 
 interface MainProps {
   setUsername: CallableFunction;
@@ -33,6 +34,10 @@ export default function Main({
       <Route
         path="/chat/:chat_id"
         element={<Chat token={token} username={username} />}
+      />
+      <Route
+        path="/chat/add_member/:chat_id"
+        element={<ChatAddMember token={token} username={username} />}
       />
     </Routes>
   );
