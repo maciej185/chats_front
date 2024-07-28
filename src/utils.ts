@@ -22,6 +22,23 @@ export function deleteCookie(cname: string) {
   document.cookie = `${cname}=; expires=Thu, 01 Jan 1970 00:00:00 UTC;`;
 }
 
+export function getErrorFromResponse(
+  resData: {
+    detail: Array<{ msg: string }> | string;
+  },
+  defaultError: string = "There was an error"
+): string {
+  type resDetailType = string | Array<{ msg: string }>;
+  const resDataDetail = resData.detail as any as resDetailType;
+  if (Array.isArray(resDataDetail)) {
+    return resDataDetail[0]["msg"];
+  } else if (typeof resDataDetail === "string") {
+    return resDataDetail;
+  } else {
+    return defaultError;
+  }
+}
+
 // function formatTime(date) {
 //   const options = {
 //       hour: "numeric",
