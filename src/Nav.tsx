@@ -30,7 +30,7 @@ export default function Nav({ username, setUsername, setToken }: NavProps) {
           </div>
         </div>
       ) : (
-        <div>{<Link to="/login">Login</Link>}</div>
+        <div></div>
       )}
     </div>
   );

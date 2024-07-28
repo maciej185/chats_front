@@ -1,17 +1,19 @@
 import { Routes, Route } from "react-router-dom";
 import Login from "./Login";
-import Feed from "./Feed";
+import Chats from "./Chats";
 import Register from "./Register";
+import ChatCreate from "./ChatCreate";
 
 interface MainProps {
   setUsername: CallableFunction;
   setToken: CallableFunction;
+  token: string;
 }
 
-export default function Main({ setUsername, setToken }: MainProps) {
+export default function Main({ setUsername, setToken, token }: MainProps) {
   return (
     <Routes>
-      <Route path="/" element={<Feed />} />
+      <Route path="/" element={<Chats token={token} />} />
       <Route
         path="/login"
         element={<Login setUsername={setUsername} setToken={setToken} />}
@@ -20,6 +22,7 @@ export default function Main({ setUsername, setToken }: MainProps) {
         path="/register"
         element={<Register setUsername={setUsername} setToken={setToken} />}
       />
+      <Route path="/create" element={<ChatCreate token={token} />} />
     </Routes>
   );
 }

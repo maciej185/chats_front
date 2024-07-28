@@ -1,0 +1,52 @@
+.create {
+  padding: 1rem;
+  border-radius: 0.5rem;
+  border: 1px solid black;
+  width: 40vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.create > div:not(div:last-of-type) {
+  margin-bottom: 0.5rem;
+}
+
+.create-main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.create-main > div:not(div:last-of-type) {
+  margin-bottom: 0.5rem;
+}
+
+.create-main-error {
+  color: darkred;
+}
+
+.create-main-input > input[type="text"] {
+  padding: 0.25rem;
+  border-radius: 0.25rem;
+  outline: unset;
+  border: 1px solid black;
+}
+
+.create-main-input > input[type="text"]:focus {
+  border: 2px solid black;
+}
+
+.create-main-btn > button {
+  border-radius: 0.5rem;
+  border: 1px solid black;
+  transition: 0.15s;
+  cursor: pointer;
+  padding: 0.5rem;
+  text-align: center;
+  background-color: white;
+}
+
+.create-main-btn > button:hover {
+  box-shadow: 0 0 0 1px black inset;
+}

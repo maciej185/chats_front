@@ -2,5 +2,7 @@
   "API_URL": "http://127.0.0.1",
   "API_PORT": "8000",
   "LOGIN_ENDPOINT": "/auth/token",
-  "REGISTER_ENDPOINT": "/auth/register"
+  "REGISTER_ENDPOINT": "/auth/register",
+  "GET_CHATS_ENDPOINT": "/chat/list",
+  "CREATE_CHAT_ENDPOINT": "/chat/add"
 }

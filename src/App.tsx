@@ -21,7 +21,7 @@ export default function App() {
   return (
     <>
       <Nav username={username} setUsername={setUsername} setToken={setToken} />
-      <Main setUsername={setUsername} setToken={setToken} />
+      <Main setUsername={setUsername} setToken={setToken} token={token} />
     </>
   );
 }
