@@ -77,7 +77,6 @@ export default function ChatMessages({
   useEffect(() => {
     (async function () {
       if (!messages) {
-        console.log("INITIAL");
         const fetchdMessagesRes = await fetchMessages(
           token,
           chat_id,
@@ -104,7 +103,6 @@ export default function ChatMessages({
     (async function () {
       const target = e.target as HTMLDivElement;
       if (target.scrollTop === 0) {
-        console.log("ADDITIONAL");
         const fetchMessagesRes = await fetchMessages(
           token,
           chat_id,
