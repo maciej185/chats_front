@@ -75,10 +75,6 @@
   font-weight: 600;
 }
 
-.chat-main-messages {
-  height: 20rem;
-}
-
 .chat-main-message {
   height: 6rem;
   display: flex;
