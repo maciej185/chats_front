@@ -3,25 +3,14 @@ import { useState, useEffect, useRef } from "react";
 import configData from "./config.json";
 import { getErrorFromResponse } from "./utils";
 import { UIEvent } from "react";
+import { Message } from "./Chat";
 
 interface ChatMessagesProps {
   token: string;
   username: string;
   chat_id: string;
-}
-
-interface Message {
-  text: string;
-  time_sent: string;
-  chat_member: {
-    user: {
-      username: "user";
-      profile: {
-        first_name: string;
-        last_name: string;
-      };
-    };
-  };
+  messages: Array<Message> | null;
+  setMessages: CallableFunction;
 }
 
 interface FetchMessagesRes {
@@ -65,8 +54,9 @@ export default function ChatMessages({
   token,
   username,
   chat_id,
+  messages,
+  setMessages,
 }: ChatMessagesProps) {
-  const [messages, setMessages] = useState<Array<Message> | null>(null);
   const [additionalMessages, setAdditionalMessages] = useState<Array<Message>>(
     new Array()
   );

@@ -64,12 +64,27 @@ export function checkIfcurrentUserIsChatMember(
   return false;
 }
 
+export interface Message {
+  text: string;
+  time_sent: string;
+  chat_member: {
+    user: {
+      username: "user";
+      profile: {
+        first_name: string;
+        last_name: string;
+      };
+    };
+  };
+}
+
 export default function Chat({ token, username }: ChatProps) {
   const [chatInfo, setChatInfo] = useState<chatInfoInterface | null>(null);
   const [chatInfoError, setChatInfoError] = useState<string | null>(null);
 
   const [currentUserIsChatMember, setCurrentUserIsChatMember] =
     useState<boolean>(true);
+  const [messages, setMessages] = useState<Array<Message> | null>(null);
   const { chat_id } = useParams<string>();
   const navigate = useNavigate();
 
@@ -143,6 +158,8 @@ export default function Chat({ token, username }: ChatProps) {
           token={token}
           username={username}
           chat_id={String(chat_id)}
+          messages={messages}
+          setMessages={setMessages}
         />
         <ChatSend />
       </div>
