@@ -1,3 +1,8 @@
+.send-error {
+  font-size: 0.75rem;
+  color: darkred;
+}
+
 .send {
   height: 6rem;
   display: flex;

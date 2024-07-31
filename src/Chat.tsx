@@ -192,7 +192,7 @@ export default function Chat({ token, username }: ChatProps) {
           chat_id={String(chat_id)}
           newMessages={newMessages}
         />
-        <ChatSend />
+        <ChatSend socket={socket} />
       </div>
     </div>
   ) : (
