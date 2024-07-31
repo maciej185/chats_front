@@ -1,5 +1,6 @@
 {
   "API_URL": "http://127.0.0.1",
+  "WS_API_URL": "ws://127.0.0.1",
   "API_PORT": "8000",
   "LOGIN_ENDPOINT": "/auth/token",
   "REGISTER_ENDPOINT": "/auth/register",
@@ -9,5 +10,6 @@
   "ADD_CHAT_MEMBER_ENDPOINT": "/chat/add_member",
   "GET_POTENTIAL_CHAT_MEMBERS_ENDPOINT": "/chat/get_potential_members/chat_id",
   "GET_MESSAGES_ENDPOINT": "/chat/messages/chat_id",
-  "NUMBER_OF_MESSAGES_PER_FETCH": 10
+  "NUMBER_OF_MESSAGES_PER_FETCH": 10,
+  "CHAT_WS_URL": "/chat/chat_id"
 }
