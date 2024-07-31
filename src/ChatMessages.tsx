@@ -9,8 +9,7 @@ interface ChatMessagesProps {
   token: string;
   username: string;
   chat_id: string;
-  messages: Array<Message> | null;
-  setMessages: CallableFunction;
+  newMessages: Array<Message>;
 }
 
 interface FetchMessagesRes {
@@ -37,12 +36,15 @@ async function fetchMessages(
     },
   });
   const resData = await res.json();
-  if (res.status === 200)
+  if (res.status === 200) {
+    const messages = resData as Array<Message>;
     return {
       status: res.status,
-      data: resData,
+      data: messages.reverse(),
       error: null,
     };
+  }
+
   return {
     status: res.status,
     data: null,
@@ -54,12 +56,12 @@ export default function ChatMessages({
   token,
   username,
   chat_id,
-  messages,
-  setMessages,
+  newMessages,
 }: ChatMessagesProps) {
   const [additionalMessages, setAdditionalMessages] = useState<Array<Message>>(
     new Array()
   );
+  const [messages, setMessages] = useState<Array<Message> | null>(null);
   const [messagesError, setMessagesError] = useState<string | null>(null);
   const indexFromTheTop = useRef<number>(0);
   const messagesBottomDiv = useRef(document.createElement("div"));
@@ -81,13 +83,13 @@ export default function ChatMessages({
         if (fetchdMessagesRes.error) setMessagesError(fetchdMessagesRes.error);
       }
     })();
-  }, [messages]);
+  }, []);
 
   useEffect(() => {
     messagesBottomDiv.current.scrollIntoView({
       block: "end",
     });
-  }, [messages]);
+  }, [messages, newMessages]);
 
   const messagesScrollListener = (e: UIEvent<HTMLDivElement>) => {
     (async function () {
@@ -113,7 +115,7 @@ export default function ChatMessages({
   return (
     <div className="messages" onScroll={messagesScrollListener}>
       {additionalMessages.length > 0 ? (
-        additionalMessages.reverse().map((message, ind) => (
+        additionalMessages.map((message, ind) => (
           <div
             className={`messages-message ${
               message.chat_member.user.username === username
@@ -135,7 +137,29 @@ export default function ChatMessages({
         <></>
       )}
       {messages ? (
-        messages.reverse().map((message, ind) => (
+        messages.map((message, ind) => (
+          <div
+            className={`messages-message ${
+              message.chat_member.user.username === username
+                ? "sent"
+                : "received"
+            }`}
+            key={`messages-message-${ind}`}
+          >
+            <div className="messages-message-info">
+              {new Date(message.time_sent).toLocaleString("pl-PL")}{" "}
+              {message.chat_member.user.username === username
+                ? ""
+                : `${message.chat_member.user.profile.first_name} ${message.chat_member.user.profile.last_name}`}
+            </div>
+            <div className="messages-message-main">{message.text}</div>
+          </div>
+        ))
+      ) : (
+        <></>
+      )}
+      {newMessages.length > 0 ? (
+        newMessages.map((message, ind) => (
           <div
             className={`messages-message ${
               message.chat_member.user.username === username

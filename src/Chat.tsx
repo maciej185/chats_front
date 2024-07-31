@@ -78,15 +78,47 @@ export interface Message {
   };
 }
 
+const getWebSocketConnectionURL = (
+  chat_id: string | undefined,
+  token: string
+): string => {
+  return chat_id
+    ? configData.WS_API_URL +
+        ":" +
+        configData.API_PORT +
+        configData.CHAT_WS_URL.replace("chat_id", chat_id) +
+        `?token=${token}`
+    : "";
+};
+
 export default function Chat({ token, username }: ChatProps) {
   const [chatInfo, setChatInfo] = useState<chatInfoInterface | null>(null);
   const [chatInfoError, setChatInfoError] = useState<string | null>(null);
-
   const [currentUserIsChatMember, setCurrentUserIsChatMember] =
     useState<boolean>(true);
-  const [messages, setMessages] = useState<Array<Message> | null>(null);
+  const [newMessages, setNewMessages] = useState<Array<Message>>(new Array());
   const { chat_id } = useParams<string>();
   const navigate = useNavigate();
+  const [socket, setSocket] = useState<WebSocket | null>(null);
+
+  const webSocketMessageHandler = (e: MessageEvent) => {
+    const newMessage = (({ text, time_sent, chat_member }) => ({
+      text,
+      time_sent,
+      chat_member,
+    }))(JSON.parse(e.data)) as Message;
+    setNewMessages((newMessages) => [...newMessages, newMessage]);
+  };
+
+  useEffect(() => {
+    if (!socket) {
+      const newSocket = new WebSocket(
+        getWebSocketConnectionURL(chat_id, token)
+      );
+      setSocket(newSocket);
+      newSocket.addEventListener("message", webSocketMessageHandler);
+    }
+  }, []);
 
   useEffect(() => {
     if (!token) {
@@ -158,8 +190,7 @@ export default function Chat({ token, username }: ChatProps) {
           token={token}
           username={username}
           chat_id={String(chat_id)}
-          messages={messages}
-          setMessages={setMessages}
+          newMessages={newMessages}
         />
         <ChatSend />
       </div>
