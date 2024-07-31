@@ -1,0 +1,44 @@
+.send {
+  height: 6rem;
+  display: flex;
+}
+
+.send > div:not(div:last-of-type) {
+  margin-right: 0.5rem;
+}
+
+.send-text {
+  flex: 1;
+}
+
+.send-text > textarea {
+  width: 100%;
+  height: 100%;
+  resize: none;
+}
+
+.send-send {
+  height: 1rem;
+  width: 1rem;
+  transition: 0.15s;
+}
+
+.send-send > svg {
+  height: 1rem;
+  width: 1rem;
+}
+
+.send-active {
+  color: black;
+  cursor: pointer;
+}
+
+.send-active:hover {
+  color: gray;
+}
+
+.send-inactive {
+  color: gray;
+  cursor: not-allowed;
+  border: unset;
+}
