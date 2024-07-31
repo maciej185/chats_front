@@ -1,0 +1,37 @@
+.messages {
+  height: 20rem;
+  overflow-y: scroll;
+  display: flex;
+  flex-direction: column;
+}
+
+.messages > div:not(div:last-of-type) {
+  margin-bottom: 0.5rem;
+}
+
+.messages-message {
+  display: flex;
+  flex-direction: column;
+}
+
+.messages-message-info {
+  font-size: 0.7rem;
+  color: gray;
+  margin-bottom: 0.25rem;
+}
+
+.messages-message-main {
+  padding: 0.5rem;
+  border: 1px solid black;
+  border-radius: 0.25rem;
+}
+
+.received {
+  align-self: flex-start;
+  align-items: flex-start;
+}
+
+.sent {
+  align-self: flex-end;
+  align-items: flex-end;
+}

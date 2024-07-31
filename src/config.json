@@ -7,5 +7,7 @@
   "CREATE_CHAT_ENDPOINT": "/chat/add",
   "GET_CHAT_ENDPOINT": "/chat/chat_id",
   "ADD_CHAT_MEMBER_ENDPOINT": "/chat/add_member",
-  "GET_POTENTIAL_CHAT_MEMBERS_ENDPOINT": "/chat/get_potential_members/chat_id"
+  "GET_POTENTIAL_CHAT_MEMBERS_ENDPOINT": "/chat/get_potential_members/chat_id",
+  "GET_MESSAGES_ENDPOINT": "/chat/messages/chat_id",
+  "NUMBER_OF_MESSAGES_PER_FETCH": 10
 }
