@@ -14,7 +14,7 @@
 }
 
 .chat-members {
-  flex: 1;
+  width: 25%;
 }
 
 .chat-members > div {
@@ -59,7 +59,7 @@
 }
 
 .chat-main {
-  flex: 3;
+  width: 75%;
 }
 
 .chat-main > div {
