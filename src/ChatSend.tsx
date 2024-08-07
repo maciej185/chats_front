@@ -10,12 +10,26 @@ interface Message2BeSent {
   message: string;
 }
 
+function sendFile(socket: WebSocket, file: File) {
+  const reader = new FileReader();
+
+  reader.onload = function (e) {
+    const target = e.target as FileReader;
+    const rawData = target.result as ArrayBuffer;
+    const byteArray = new Uint8Array(rawData);
+
+    socket.send(byteArray.buffer);
+  };
+
+  reader.readAsArrayBuffer(file);
+}
+
 export default function ChatSend({ socket }: ChatSendProps) {
   const [inputMessage, setInputMessage] = useState<string>("");
   const [sendBtnStateClassName, setSendBtnStateClassName] =
     useState<string>("send-main-active");
   const [sendError, setSendError] = useState<string | null>(null);
-  const [images, setImages] = useState<Array<string>>([]);
+  const [images, setImages] = useState<Array<File>>([]);
   const [imageInputValue, setImageInputValue] = useState<string | undefined>(
     undefined
   );
@@ -27,15 +41,20 @@ export default function ChatSend({ socket }: ChatSendProps) {
   }, [inputMessage]);
 
   const sendBtnClickHandler: MouseEventHandler = (e) => {
-    if (inputMessage === "") return;
+    if (inputMessage === "" && images.length === 0) return;
     let i = 0;
     if (socket) {
       while (i < 10) {
         if (socket.readyState == WebSocket.OPEN) {
-          const message = { message: inputMessage } as Message2BeSent;
-          socket.send(JSON.stringify(message));
-          if (sendError) setSendError(null);
-          setInputMessage("");
+          if (inputMessage !== "") {
+            const message = { message: inputMessage } as Message2BeSent;
+            socket.send(JSON.stringify(message));
+            if (sendError) setSendError(null);
+            setInputMessage("");
+          }
+
+          images.forEach((image) => sendFile(socket, image));
+          setImages([]);
           return;
         }
         i++;
@@ -48,7 +67,7 @@ export default function ChatSend({ socket }: ChatSendProps) {
     const target = e.target as HTMLInputElement;
     setInputMessage(target.value);
     setSendBtnStateClassName(
-      inputMessage === "" ? "send-inactive" : "send-active"
+      inputMessage === "" ? "send-main-inactive" : "send-main-active"
     );
   };
 
@@ -56,15 +75,9 @@ export default function ChatSend({ socket }: ChatSendProps) {
     const target = e.target as HTMLInputElement;
     setImageInputValue(target.value);
     setImages((oldImages) =>
-      target.files
-        ? [
-            ...oldImages,
-            ...Array.from(target.files).map((file) =>
-              URL.createObjectURL(file)
-            ),
-          ]
-        : oldImages
+      target.files ? [...oldImages, ...Array.from(target.files)] : oldImages
     );
+    setSendBtnStateClassName("send-main-active");
   };
 
   function deleteImageClickHandlerGenerator(ind: number): MouseEventHandler {
@@ -73,7 +86,11 @@ export default function ChatSend({ socket }: ChatSendProps) {
       oldImages.splice(ind, 1);
       setImages(oldImages);
       setImageInputValue(""); // this is done to ensure that the user can delete and then upload the same picture again
+      setSendBtnStateClassName(
+        oldImages.length === 0 ? "send-main-inactive" : "send-main-active"
+      );
     };
+
     return deleteImageClickHandler;
   }
 
@@ -130,12 +147,12 @@ export default function ChatSend({ socket }: ChatSendProps) {
             </label>
           </div>
           {images.length > 0 ? (
-            images.map((imageURL, ind) => (
+            images.map((image, ind) => (
               <div
                 key={`send-images-main-image-${ind}`}
                 className="send-images-main-image"
               >
-                <img src={imageURL} />
+                <img src={URL.createObjectURL(image)} />
                 <div
                   className="send-images-main-image-delete"
                   onClick={deleteImageClickHandlerGenerator(ind)}
