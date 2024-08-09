@@ -65,6 +65,7 @@ export function checkIfcurrentUserIsChatMember(
 }
 
 export interface Message {
+  message_id: number;
   text: string;
   time_sent: string;
   chat_member: {
@@ -76,6 +77,8 @@ export interface Message {
       };
     };
   };
+  contains_image: boolean;
+  image?: File;
 }
 
 const getWebSocketConnectionURL = (

@@ -1,6 +1,7 @@
 .messages {
   height: 20rem;
   overflow-y: scroll;
+  overflow-x: hidden;
   display: flex;
   flex-direction: column;
 }
@@ -26,6 +27,15 @@
   border-radius: 0.25rem;
 }
 
+.messages-message-main-img {
+  width: 20vw;
+}
+
+.messages-message-main-img > img {
+  width: inherit;
+  object-fit: fill;
+}
+
 .received {
   align-self: flex-start;
   align-items: flex-start;
@@ -34,4 +44,9 @@
 .sent {
   align-self: flex-end;
   align-items: flex-end;
+}
+
+.error {
+  color: darkred;
+  font-size: 0.75rem;
 }

@@ -11,5 +11,6 @@
   "GET_POTENTIAL_CHAT_MEMBERS_ENDPOINT": "/chat/get_potential_members/chat_id",
   "GET_MESSAGES_ENDPOINT": "/chat/messages/chat_id",
   "NUMBER_OF_MESSAGES_PER_FETCH": 10,
-  "CHAT_WS_URL": "/chat/chat_id"
+  "CHAT_WS_URL": "/chat/chat_id",
+  "GET_IMAGE_ENDPOINT": "/chat/image/message_id"
 }
