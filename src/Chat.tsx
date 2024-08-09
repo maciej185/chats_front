@@ -94,6 +94,28 @@ const getWebSocketConnectionURL = (
     : "";
 };
 
+export async function fetchImage(
+  token: string,
+  message_id: number
+): Promise<any> {
+  const url = (
+    configData.API_URL +
+    ":" +
+    configData.API_PORT +
+    configData.GET_IMAGE_ENDPOINT
+  ).replace("message_id", String(message_id));
+  const res = await fetch(url, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  const resData = await res.blob();
+  if (res.status == 200) {
+    return new File([resData], `${message_id}.png`);
+  }
+  return null;
+}
+
 export default function Chat({ token, username }: ChatProps) {
   const [chatInfo, setChatInfo] = useState<chatInfoInterface | null>(null);
   const [chatInfoError, setChatInfoError] = useState<string | null>(null);
@@ -105,12 +127,28 @@ export default function Chat({ token, username }: ChatProps) {
   const [socket, setSocket] = useState<WebSocket | null>(null);
 
   const webSocketMessageHandler = (e: MessageEvent) => {
-    const newMessage = (({ text, time_sent, chat_member }) => ({
+    const newMessage = (({
       text,
       time_sent,
       chat_member,
+      message_id,
+      contains_image,
+    }) => ({
+      message_id,
+      text,
+      time_sent,
+      chat_member,
+      contains_image,
     }))(JSON.parse(e.data)) as Message;
-    setNewMessages((newMessages) => [...newMessages, newMessage]);
+    if (newMessage.contains_image) {
+      (async function () {
+        const fetchedImage = await fetchImage(token, newMessage.message_id);
+        newMessage.image = fetchedImage;
+        setNewMessages((newMessages) => [...newMessages, newMessage]);
+      })();
+    } else {
+      setNewMessages((newMessages) => [...newMessages, newMessage]);
+    }
   };
 
   useEffect(() => {
