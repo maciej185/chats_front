@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from "react";
 import configData from "./config.json";
 import { getErrorFromResponse } from "./utils";
 import { UIEvent } from "react";
-import { Message } from "./Chat";
+import { Message, fetchImage } from "./Chat";
 
 interface ChatMessagesProps {
   token: string;
@@ -50,25 +50,6 @@ async function fetchMessages(
     data: null,
     error: getErrorFromResponse(resData),
   };
-}
-
-async function fetchImage(token: string, message_id: number): Promise<any> {
-  const url = (
-    configData.API_URL +
-    ":" +
-    configData.API_PORT +
-    configData.GET_IMAGE_ENDPOINT
-  ).replace("message_id", String(message_id));
-  const res = await fetch(url, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-  const resData = await res.blob();
-  if (res.status == 200) {
-    return new File([resData], `${message_id}.png`);
-  }
-  return null;
 }
 
 export default function ChatMessages({
@@ -226,7 +207,21 @@ export default function ChatMessages({
                 ? ""
                 : `${message.chat_member.user.profile.first_name} ${message.chat_member.user.profile.last_name}`}
             </div>
-            <div className="messages-message-main">{message.text}</div>
+            {!message.contains_image ? (
+              <div className="messages-message-main">{message.text}</div>
+            ) : (
+              <div className="messages-message-main ">
+                <div className="messages-message-main-img">
+                  {message.image ? (
+                    <img src={URL.createObjectURL(message.image)} />
+                  ) : (
+                    <div className="messages-message-main-img error">
+                      There was an error when trying to fetch the image.
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
         ))
       ) : (
