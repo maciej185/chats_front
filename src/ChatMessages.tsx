@@ -52,6 +52,31 @@ async function fetchMessages(
   };
 }
 
+async function fetchImagesForMessageList(
+  token: string,
+  fetchedMessages: Array<Message>,
+  messagesSetter: CallableFunction
+) {
+  // setting the messages list right away so that text messages get displayed imidiatelly
+  messagesSetter(fetchedMessages);
+
+  // re-setting the `images` state variable after each image was fetched so they
+  // get rendered one by one
+
+  const messagesWithImages = [...fetchedMessages];
+  for (let i = 0; i < messagesWithImages.length; i++) {
+    if (messagesWithImages[i].contains_image && !messagesWithImages[i].image) {
+      const fetchedImage = await fetchImage(
+        token,
+        messagesWithImages[i].message_id
+      );
+      messagesWithImages[i].image = fetchedImage;
+      const messagesWithImagesUpdated = [...messagesWithImages];
+      messagesSetter(messagesWithImagesUpdated);
+    }
+  }
+}
+
 export default function ChatMessages({
   token,
   username,
@@ -75,24 +100,11 @@ export default function ChatMessages({
           indexFromTheTop.current
         );
         if (fetchdMessagesRes.data && fetchdMessagesRes.data.length > 0) {
-          // setting the messages list right away so that text messages get displayed imidiatelly
-          setMessages(fetchdMessagesRes.data);
-
-          // re-setting the `images` state variable after each image was fetched so they
-          // get rendered one by one
-
-          const messagesWithImages = [...fetchdMessagesRes.data];
-          for (let i = 0; i < messagesWithImages.length; i++) {
-            if (messagesWithImages[i].contains_image) {
-              const fetchedImage = await fetchImage(
-                token,
-                messagesWithImages[i].message_id
-              );
-              messagesWithImages[i].image = fetchedImage;
-              const messagesWithImagesUpdated = [...messagesWithImages];
-              setMessages(messagesWithImagesUpdated);
-            }
-          }
+          await fetchImagesForMessageList(
+            token,
+            fetchdMessagesRes.data,
+            setMessages
+          );
 
           indexFromTheTop.current =
             indexFromTheTop.current + configData.NUMBER_OF_MESSAGES_PER_FETCH;
@@ -121,7 +133,11 @@ export default function ChatMessages({
         if (fetchMessagesRes.data && fetchMessagesRes.data.length > 0) {
           const newAdditionalMessages =
             fetchMessagesRes.data.concat(additionalMessages);
-          setAdditionalMessages(newAdditionalMessages);
+          await fetchImagesForMessageList(
+            token,
+            newAdditionalMessages,
+            setAdditionalMessages
+          );
 
           indexFromTheTop.current =
             indexFromTheTop.current + configData.NUMBER_OF_MESSAGES_PER_FETCH;
@@ -149,7 +165,21 @@ export default function ChatMessages({
                 ? ""
                 : `${message.chat_member.user.profile.first_name} ${message.chat_member.user.profile.last_name}`}
             </div>
-            <div className="messages-message-main">{message.text}</div>
+            {!message.contains_image ? (
+              <div className="messages-message-main">{message.text}</div>
+            ) : (
+              <div className="messages-message-main ">
+                <div className="messages-message-main-img">
+                  {message.image ? (
+                    <img src={URL.createObjectURL(message.image)} />
+                  ) : (
+                    <div className="messages-message-main-img error">
+                      There was an error when trying to fetch the image.
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
         ))
       ) : (
