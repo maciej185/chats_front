@@ -1,5 +1,5 @@
 import "./styles/ChatSend.css";
-import { useState, useEffect } from "react";
+import { useState, useEffect, FormEventHandler } from "react";
 import { MouseEventHandler, ChangeEventHandler } from "react";
 
 interface ChatSendProps {
@@ -13,12 +13,16 @@ interface Message2BeSent {
 export default function ChatSend({ socket }: ChatSendProps) {
   const [inputMessage, setInputMessage] = useState<string>("");
   const [sendBtnStateClassName, setSendBtnStateClassName] =
-    useState<string>("send-active");
+    useState<string>("send-main-active");
   const [sendError, setSendError] = useState<string | null>(null);
+  const [images, setImages] = useState<Array<string>>([]);
+  const [imageInputValue, setImageInputValue] = useState<string | undefined>(
+    undefined
+  );
 
   useEffect(() => {
     setSendBtnStateClassName(
-      inputMessage === "" ? "send-inactive" : "send-active"
+      inputMessage === "" ? "send-main-inactive" : "send-main-active"
     );
   }, [inputMessage]);
 
@@ -48,18 +52,43 @@ export default function ChatSend({ socket }: ChatSendProps) {
     );
   };
 
+  const imageInputHandler: FormEventHandler = (e) => {
+    const target = e.target as HTMLInputElement;
+    setImageInputValue(target.value);
+    setImages((oldImages) =>
+      target.files
+        ? [
+            ...oldImages,
+            ...Array.from(target.files).map((file) =>
+              URL.createObjectURL(file)
+            ),
+          ]
+        : oldImages
+    );
+  };
+
+  function deleteImageClickHandlerGenerator(ind: number): MouseEventHandler {
+    const deleteImageClickHandler: MouseEventHandler = (e) => {
+      const oldImages = [...images];
+      oldImages.splice(ind, 1);
+      setImages(oldImages);
+      setImageInputValue(""); // this is done to ensure that the user can delete and then upload the same picture again
+    };
+    return deleteImageClickHandler;
+  }
+
   return (
-    <>
+    <div className="send">
       {sendError ? <div className="send-error">{sendError}</div> : <></>}
-      <div className="send">
-        <div className="send-text">
+      <div className="send-main">
+        <div className="send-main-text">
           <textarea
             value={inputMessage}
             onChange={textareaChangleHandler}
           ></textarea>
         </div>
         <div
-          className={`send-send ${sendBtnStateClassName}`}
+          className={`send-main-send ${sendBtnStateClassName}`}
           onClick={sendBtnClickHandler}
         >
           <svg
@@ -72,6 +101,63 @@ export default function ChatSend({ socket }: ChatSendProps) {
           </svg>
         </div>
       </div>
-    </>
+      <div className="send-images">
+        <div className="send-images-main">
+          <input
+            type="file"
+            id="input-images"
+            onChange={imageInputHandler}
+            value={imageInputValue}
+            multiple
+            accept="image/png, image/jpeg"
+          />
+
+          <div className="send-images-main-input">
+            <label htmlFor="input-images">
+              <div className="send-images-main-input-icon">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="currentColor"
+                  className="bi bi-plus-lg"
+                  viewBox="0 0 16 16"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2"
+                  />
+                </svg>
+              </div>
+            </label>
+          </div>
+          {images.length > 0 ? (
+            images.map((imageURL, ind) => (
+              <div
+                key={`send-images-main-image-${ind}`}
+                className="send-images-main-image"
+              >
+                <img src={imageURL} />
+                <div
+                  className="send-images-main-image-delete"
+                  onClick={deleteImageClickHandlerGenerator(ind)}
+                >
+                  <div className="send-images-main-image-delete-icon">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="currentColor"
+                      className="bi bi-x-lg"
+                      viewBox="0 0 16 16"
+                    >
+                      <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z" />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+            ))
+          ) : (
+            <></>
+          )}
+        </div>
+      </div>
+    </div>
   );
 }
