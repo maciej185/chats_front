@@ -1,9 +1,12 @@
 import "./styles/ChatSend.css";
 import { useState, useEffect, FormEventHandler } from "react";
 import { MouseEventHandler, ChangeEventHandler } from "react";
+import { logger } from "./logger";
+import { Message } from "./Chat";
 
 interface ChatSendProps {
   socket: WebSocket | null;
+  newMessages: Array<Message>;
 }
 
 interface Message2BeSent {
@@ -24,7 +27,7 @@ function sendFile(socket: WebSocket, file: File) {
   reader.readAsArrayBuffer(file);
 }
 
-export default function ChatSend({ socket }: ChatSendProps) {
+export default function ChatSend({ socket, newMessages }: ChatSendProps) {
   const [inputMessage, setInputMessage] = useState<string>("");
   const [sendBtnStateClassName, setSendBtnStateClassName] =
     useState<string>("send-main-active");
@@ -47,10 +50,24 @@ export default function ChatSend({ socket }: ChatSendProps) {
       while (i < 10) {
         if (socket.readyState == WebSocket.OPEN) {
           if (inputMessage !== "") {
-            const message = { message: inputMessage } as Message2BeSent;
-            socket.send(JSON.stringify(message));
-            if (sendError) setSendError(null);
-            setInputMessage("");
+              const message = { message: inputMessage } as Message2BeSent;
+              const messageCountBeforeSending = newMessages.length;
+              socket.send(JSON.stringify(message));
+              logger.log(`Message sent: ${inputMessage}`);
+              if (sendError) setSendError(null);
+              setInputMessage("");
+              setTimeout(() => {
+                if (messageCountBeforeSending < newMessages.length) {
+                  logger.log(`Message arrived: ${inputMessage}`);
+                } else {
+                  logger.log(`Resending: ${inputMessage}`);
+                  socket.send(JSON.stringify(message));
+                  if (sendError) setSendError(null);
+                setInputMessage("");
+                }
+              }, 500);
+              
+            
           }
 
           images.forEach((image) => sendFile(socket, image));
