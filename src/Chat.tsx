@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { getErrorFromResponse } from "./utils";
 import ChatMessages from "./ChatMessages";
 import ChatSend from "./ChatSend";
+import { logger } from "./logger";
 
 interface ChatProps {
   token: string;
