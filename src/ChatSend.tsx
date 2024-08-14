@@ -27,6 +27,23 @@ function sendFile(socket: WebSocket, file: File) {
   reader.readAsArrayBuffer(file);
 }
 
+async function sendImage(
+  socket: WebSocket,
+  image: File,
+  messageCountBeforeSending: number,
+  newMessages: Array<Message>
+) {
+  sendFile(socket, image);
+  setTimeout(() => {
+    if (messageCountBeforeSending < newMessages.length) {
+      logger.log(`Image arrived: ${image.name}`);
+    } else {
+      logger.log(`Resending: ${image.name}`);
+      sendFile(socket, image);
+    }
+  }, 500);
+}
+
 export default function ChatSend({ socket, newMessages }: ChatSendProps) {
   const [inputMessage, setInputMessage] = useState<string>("");
   const [sendBtnStateClassName, setSendBtnStateClassName] =
@@ -36,12 +53,35 @@ export default function ChatSend({ socket, newMessages }: ChatSendProps) {
   const [imageInputValue, setImageInputValue] = useState<string | undefined>(
     undefined
   );
+  const [image2bSent, setImage2bSent] = useState<File | null>(null);
 
   useEffect(() => {
     setSendBtnStateClassName(
       inputMessage === "" ? "send-main-inactive" : "send-main-active"
     );
   }, [inputMessage]);
+
+  useEffect(() => {
+    if (image2bSent != null) {
+      let messageCountBeforeSending = newMessages.length;
+      if (socket)
+        sendImage(socket, image2bSent, messageCountBeforeSending, newMessages);
+    }
+  }, [image2bSent]);
+
+  useEffect(() => {
+    if (newMessages.at(-1)?.contains_image) {
+      // this is added to ensure that the trigger for sending another image is activated when the previous message also contained an image
+      if (images.length == 0) {
+        setImage2bSent(null);
+      } else if (images.length >= 1) {
+        const newImages = [...images];
+        const newImage2bSent = newImages.pop();
+        setImages(newImages);
+        if (newImage2bSent) setImage2bSent(newImage2bSent);
+      }
+    }
+  }, [newMessages]);
 
   const sendBtnClickHandler: MouseEventHandler = (e) => {
     if (inputMessage === "" && images.length === 0) return;
@@ -50,28 +90,29 @@ export default function ChatSend({ socket, newMessages }: ChatSendProps) {
       while (i < 10) {
         if (socket.readyState == WebSocket.OPEN) {
           if (inputMessage !== "") {
-              const message = { message: inputMessage } as Message2BeSent;
-              const messageCountBeforeSending = newMessages.length;
-              socket.send(JSON.stringify(message));
-              logger.log(`Message sent: ${inputMessage}`);
-              if (sendError) setSendError(null);
-              setInputMessage("");
-              setTimeout(() => {
-                if (messageCountBeforeSending < newMessages.length) {
-                  logger.log(`Message arrived: ${inputMessage}`);
-                } else {
-                  logger.log(`Resending: ${inputMessage}`);
-                  socket.send(JSON.stringify(message));
-                  if (sendError) setSendError(null);
+            const message = { message: inputMessage } as Message2BeSent;
+            const messageCountBeforeSending = newMessages.length;
+            socket.send(JSON.stringify(message));
+            logger.log(`Message sent: ${inputMessage}`);
+            if (sendError) setSendError(null);
+            setInputMessage("");
+            setTimeout(() => {
+              if (messageCountBeforeSending < newMessages.length) {
+                logger.log(`Message arrived: ${inputMessage}`);
+              } else {
+                logger.log(`Resending: ${inputMessage}`);
+                socket.send(JSON.stringify(message));
+                if (sendError) setSendError(null);
                 setInputMessage("");
-                }
-              }, 500);
-              
-            
+              }
+            }, 500);
           }
 
-          images.forEach((image) => sendFile(socket, image));
-          setImages([]);
+          const newImages = [...images];
+          const newImage2bSent = newImages.pop();
+          setImages(newImages);
+          if (newImage2bSent) setImage2bSent(newImage2bSent);
+
           return;
         }
         i++;
