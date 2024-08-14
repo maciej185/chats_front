@@ -1,3 +1,5 @@
+import configData from "./config.json";
+
 export function getCookie(cname: string) {
   let name = cname + "=";
   let decodedCookie = decodeURIComponent(document.cookie);
@@ -37,6 +39,18 @@ export function getErrorFromResponse(
   } else {
     return defaultError;
   }
+}
+
+export function getBackendAddress() {
+  return `${
+    process.env.REACT_APP_API_URL
+      ? process.env.REACT_APP_API_URL
+      : configData.API_URL
+  }:${
+    process.env.REACT_APP_API_PORT
+      ? process.env.REACT_APP_API_PORT
+      : configData.API_PORT
+  }`;
 }
 
 // function formatTime(date) {

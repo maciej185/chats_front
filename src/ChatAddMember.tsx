@@ -10,7 +10,7 @@ import {
 import { useParams } from "react-router-dom";
 import ChatAddMembersSelect from "./ChatAddMembersSelect";
 import configData from "./config.json";
-import { getErrorFromResponse } from "./utils";
+import { getErrorFromResponse, getBackendAddress } from "./utils";
 
 interface ChatAddMemberProps {
   token: string;
@@ -57,10 +57,7 @@ export default function ChatAddMember({ token, username }: ChatAddMemberProps) {
 
     (async function () {
       const url =
-        configData.API_URL +
-        ":" +
-        configData.API_PORT +
-        configData.ADD_CHAT_MEMBER_ENDPOINT;
+        "http://" + getBackendAddress() + configData.ADD_CHAT_MEMBER_ENDPOINT;
       const res = await fetch(url, {
         method: "POST",
         headers: {

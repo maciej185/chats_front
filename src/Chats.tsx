@@ -3,17 +3,14 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import configData from "./config.json";
 import { Link } from "react-router-dom";
+import { getBackendAddress } from "./utils";
 
 interface ChatProps {
   token: string;
 }
 
 async function getChats(token: string) {
-  const url =
-    configData.API_URL +
-    ":" +
-    configData.API_PORT +
-    configData.GET_CHATS_ENDPOINT;
+  const url = "http://" + getBackendAddress() + configData.GET_CHATS_ENDPOINT;
   const res = await fetch(url, {
     headers: {
       Authorization: `Bearer ${token}`,

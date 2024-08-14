@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { getErrorFromResponse } from "./utils";
 import ChatMessages from "./ChatMessages";
 import ChatSend from "./ChatSend";
-import { logger } from "./logger";
+import { getBackendAddress } from "./utils";
 
 interface ChatProps {
   token: string;
@@ -34,9 +34,8 @@ export async function fetchChatData(
   ChatInfoErrorSetter: CallableFunction
 ) {
   const url = (
-    configData.API_URL +
-    ":" +
-    configData.API_PORT +
+    "http://" +
+    getBackendAddress() +
     configData.GET_CHAT_ENDPOINT
   ).replace("chat_id", String(chat_id));
   const res = await fetch(url, {
@@ -87,9 +86,8 @@ const getWebSocketConnectionURL = (
   token: string
 ): string => {
   return chat_id
-    ? configData.WS_API_URL +
-        ":" +
-        configData.API_PORT +
+    ? "ws://" +
+        getBackendAddress() +
         configData.CHAT_WS_URL.replace("chat_id", chat_id) +
         `?token=${token}`
     : "";
@@ -100,9 +98,8 @@ export async function fetchImage(
   message_id: number
 ): Promise<any> {
   const url = (
-    configData.API_URL +
-    ":" +
-    configData.API_PORT +
+    "http://" +
+    getBackendAddress() +
     configData.GET_IMAGE_ENDPOINT
   ).replace("message_id", String(message_id));
   const res = await fetch(url, {
