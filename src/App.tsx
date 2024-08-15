@@ -2,6 +2,7 @@ import "./styles/App.css";
 import { useState, useEffect, useReducer } from "react";
 import Nav from "./Nav";
 import Main from "./Main";
+import { TokenContext, DispatchTokenContext } from "./tokenContext";
 
 function tokenReducer(_token: string, action: { token_value: string }) {
   return action.token_value;
@@ -22,18 +23,19 @@ export default function App() {
   }, []);
 
   return (
-    <>
-      <Nav
-        username={username}
-        setUsername={setUsername}
-        tokenDispatch={tokenDispatch}
-      />
-      <Main
-        setUsername={setUsername}
-        tokenDispatch={tokenDispatch}
-        token={token}
-        username={username}
-      />
-    </>
+    <TokenContext.Provider value={token}>
+      <DispatchTokenContext.Provider value={tokenDispatch}>
+        <Nav
+          username={username}
+          setUsername={setUsername}
+          tokenDispatch={tokenDispatch}
+        />
+        <Main
+          setUsername={setUsername}
+          tokenDispatch={tokenDispatch}
+          username={username}
+        />
+      </DispatchTokenContext.Provider>
+    </TokenContext.Provider>
   );
 }

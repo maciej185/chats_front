@@ -1,10 +1,10 @@
 import "./styles/Chats.css";
-import { useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import configData from "./config.json";
 import { Link } from "react-router-dom";
 import { getBackendAddress } from "./utils";
 import { useAuthenticate } from "./hooks";
+import { TokenContext } from "./tokenContext";
 
 interface ChatProps {
   token: string;
@@ -34,8 +34,9 @@ async function getChats(token: string): Promise<GetChatsRespoonse> {
   }
 }
 
-export default function Chats({ token }: ChatProps) {
+export default function Chats() {
   const [chats, setChats] = useState<GetChatsRespoonse | null>(null);
+  const token = useContext(TokenContext);
   useAuthenticate(token);
 
   useEffect(() => {
@@ -43,7 +44,6 @@ export default function Chats({ token }: ChatProps) {
       const chats = await getChats(token);
       setChats(chats);
     })();
-    console.log(chats);
   }, [token]);
 
   return (
