@@ -2,11 +2,11 @@ import "./styles/Chat.css";
 import { Link, useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import configData from "./config.json";
-import { useNavigate } from "react-router-dom";
 import { getErrorFromResponse } from "./utils";
 import ChatMessages from "./ChatMessages";
 import ChatSend from "./ChatSend";
 import { getBackendAddress } from "./utils";
+import { useAuthenticate } from "./hooks";
 
 interface ChatProps {
   token: string;
@@ -128,8 +128,9 @@ export default function Chat({ token, username }: ChatProps) {
     useState<boolean>(true);
   const [newMessages, setNewMessages] = useState<Array<Message>>(new Array());
   const { chat_id } = useParams<string>();
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const [socket, setSocket] = useState<WebSocket | null>(null);
+  useAuthenticate(token);
 
   const webSocketMessageHandler = (e: MessageEvent) => {
     const newMessage = (({
@@ -167,10 +168,6 @@ export default function Chat({ token, username }: ChatProps) {
   }, []);
 
   useEffect(() => {
-    if (!token) {
-      navigate("/login");
-      return;
-    }
     if (!chatInfo)
       (async function () {
         await fetchChatData(

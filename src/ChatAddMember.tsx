@@ -11,6 +11,7 @@ import { useParams } from "react-router-dom";
 import ChatAddMembersSelect from "./ChatAddMembersSelect";
 import configData from "./config.json";
 import { getErrorFromResponse, getBackendAddress } from "./utils";
+import { useAuthenticate } from "./hooks";
 
 interface ChatAddMemberProps {
   token: string;
@@ -29,6 +30,7 @@ export default function ChatAddMember({ token, username }: ChatAddMemberProps) {
   const [addBtnClassName, setAddBtnClassName] = useState<string>("inactive");
   const { chat_id } = useParams<string>();
   const navigate = useNavigate();
+  useAuthenticate(token);
   let { state } = useLocation();
 
   useEffect(() => {

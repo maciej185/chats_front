@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import configData from "./config.json";
 import { Link } from "react-router-dom";
 import { getBackendAddress } from "./utils";
+import { useAuthenticate } from "./hooks";
 
 interface ChatProps {
   token: string;
@@ -35,16 +36,15 @@ async function getChats(token: string): Promise<GetChatsRespoonse> {
 
 export default function Chats({ token }: ChatProps) {
   const [chats, setChats] = useState<GetChatsRespoonse | null>(null);
-  const navigate = useNavigate();
+  useAuthenticate(token);
 
   useEffect(() => {
-    if (!token) navigate("/login");
     (async function () {
       const chats = await getChats(token);
       setChats(chats);
     })();
     console.log(chats);
-  }, []);
+  }, [token]);
 
   return (
     <div className="chats">
