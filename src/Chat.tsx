@@ -1,15 +1,15 @@
 import "./styles/Chat.css";
 import { Link, useParams } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import configData from "./config.json";
 import { getErrorFromResponse } from "./utils";
 import ChatMessages from "./ChatMessages";
 import ChatSend from "./ChatSend";
 import { getBackendAddress } from "./utils";
 import { useAuthenticate } from "./hooks";
+import { TokenContext } from "./tokenContext";
 
 interface ChatProps {
-  token: string;
   username: string;
 }
 
@@ -121,7 +121,7 @@ export async function fetchImage(
   return null;
 }
 
-export default function Chat({ token, username }: ChatProps) {
+export default function Chat({ username }: ChatProps) {
   const [chatInfo, setChatInfo] = useState<chatInfoInterface | null>(null);
   const [chatInfoError, setChatInfoError] = useState<string | null>(null);
   const [currentUserIsChatMember, setCurrentUserIsChatMember] =
@@ -130,6 +130,7 @@ export default function Chat({ token, username }: ChatProps) {
   const { chat_id } = useParams<string>();
   // const navigate = useNavigate();
   const [socket, setSocket] = useState<WebSocket | null>(null);
+  const token = useContext(TokenContext);
   useAuthenticate(token);
 
   const webSocketMessageHandler = (e: MessageEvent) => {
@@ -230,7 +231,6 @@ export default function Chat({ token, username }: ChatProps) {
           {chatInfo ? chatInfo.name : "Loading"}
         </div>
         <ChatMessages
-          token={token}
           username={username}
           chat_id={String(chat_id)}
           newMessages={newMessages}

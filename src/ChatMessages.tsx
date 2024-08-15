@@ -1,12 +1,12 @@
 import "./styles/ChatMessages.css";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useContext } from "react";
 import configData from "./config.json";
 import { getErrorFromResponse, getBackendAddress } from "./utils";
 import { UIEvent } from "react";
 import { Message, fetchImage } from "./Chat";
+import { TokenContext } from "./tokenContext";
 
 interface ChatMessagesProps {
-  token: string;
   username: string;
   chat_id: string;
   newMessages: Array<Message>;
@@ -85,7 +85,6 @@ async function fetchImagesForMessageList(
 }
 
 export default function ChatMessages({
-  token,
   username,
   chat_id,
   newMessages,
@@ -97,6 +96,7 @@ export default function ChatMessages({
   const [messagesError, setMessagesError] = useState<string | null>(null);
   const indexFromTheTop = useRef<number>(0);
   const messagesBottomDiv = useRef(document.createElement("div"));
+  const token = useContext(TokenContext);
 
   useEffect(() => {
     (async function () {

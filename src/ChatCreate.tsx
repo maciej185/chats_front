@@ -1,6 +1,6 @@
 import {
   useState,
-  useEffect,
+  useContext,
   MouseEventHandler,
   FormEventHandler,
 } from "react";
@@ -9,15 +9,13 @@ import "./styles/ChatCreate.css";
 import configData from "./config.json";
 import { getErrorFromResponse, getBackendAddress } from "./utils";
 import { useAuthenticate } from "./hooks";
+import { TokenContext } from "./tokenContext";
 
-interface ChatCreateProps {
-  token: string;
-}
-
-export default function ChatCreate({ token }: ChatCreateProps) {
+export default function ChatCreate() {
   const [inputName, setInputName] = useState<string>("");
   const [inputNameError, setInputNameError] = useState<string | null>(null);
   const navigate = useNavigate();
+  const token = useContext(TokenContext);
   useAuthenticate(token);
 
   const createBtnClickHandler: MouseEventHandler = (e) => {

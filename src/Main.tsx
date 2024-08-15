@@ -9,19 +9,17 @@ import ChatAddMember from "./ChatAddMember";
 interface MainProps {
   setUsername: CallableFunction;
   tokenDispatch: CallableFunction;
-  token: string;
   username: string;
 }
 
 export default function Main({
   setUsername,
   tokenDispatch,
-  token,
   username,
 }: MainProps) {
   return (
     <Routes>
-      <Route path="/" element={<Chats token={token} />} />
+      <Route path="/" element={<Chats />} />
       <Route
         path="/login"
         element={
@@ -34,14 +32,11 @@ export default function Main({
           <Register setUsername={setUsername} tokenDispatch={tokenDispatch} />
         }
       />
-      <Route path="/create" element={<ChatCreate token={token} />} />
-      <Route
-        path="/chat/:chat_id"
-        element={<Chat token={token} username={username} />}
-      />
+      <Route path="/create" element={<ChatCreate />} />
+      <Route path="/chat/:chat_id" element={<Chat username={username} />} />
       <Route
         path="/chat/add_member/:chat_id"
-        element={<ChatAddMember token={token} username={username} />}
+        element={<ChatAddMember username={username} />}
       />
     </Routes>
   );

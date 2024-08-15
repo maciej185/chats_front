@@ -1,6 +1,6 @@
 import "./styles/ChatAddMember.css";
 import { useLocation } from "react-router-dom";
-import { MouseEventHandler, useEffect, useState } from "react";
+import { MouseEventHandler, useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   chatInfoInterface,
@@ -12,13 +12,13 @@ import ChatAddMembersSelect from "./ChatAddMembersSelect";
 import configData from "./config.json";
 import { getErrorFromResponse, getBackendAddress } from "./utils";
 import { useAuthenticate } from "./hooks";
+import { TokenContext } from "./tokenContext";
 
 interface ChatAddMemberProps {
-  token: string;
   username: string;
 }
 
-export default function ChatAddMember({ token, username }: ChatAddMemberProps) {
+export default function ChatAddMember({ username }: ChatAddMemberProps) {
   const [chatInfo, setChatInfo] = useState<chatInfoInterface | null>(null);
   const [chatInfoError, setChatInfoError] = useState<string | null>(null);
   const [currentUserIsChatMember, setCurrentUserIsChatMember] =
@@ -30,6 +30,7 @@ export default function ChatAddMember({ token, username }: ChatAddMemberProps) {
   const [addBtnClassName, setAddBtnClassName] = useState<string>("inactive");
   const { chat_id } = useParams<string>();
   const navigate = useNavigate();
+  const token = useContext(TokenContext);
   useAuthenticate(token);
   let { state } = useLocation();
 
