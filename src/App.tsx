@@ -1,11 +1,15 @@
 import "./styles/App.css";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useReducer } from "react";
 import Nav from "./Nav";
 import Main from "./Main";
 
+function tokenReducer(_token: string, action: { token_value: string }) {
+  return action.token_value;
+}
+
 export default function App() {
   const [username, setUsername] = useState<string>("");
-  const [token, setToken] = useState<string>("");
+  const [token, tokenDispatch] = useReducer(tokenReducer, "");
 
   useEffect(() => {
     const usernameFromSessionStorage = sessionStorage.getItem("username");
@@ -13,16 +17,20 @@ export default function App() {
 
     if (usernameFromSessionStorage && tokenFromSessionStorage) {
       setUsername(usernameFromSessionStorage);
-      setToken(tokenFromSessionStorage);
+      tokenDispatch({ token_value: tokenFromSessionStorage });
     }
   }, []);
 
   return (
     <>
-      <Nav username={username} setUsername={setUsername} setToken={setToken} />
+      <Nav
+        username={username}
+        setUsername={setUsername}
+        tokenDispatch={tokenDispatch}
+      />
       <Main
         setUsername={setUsername}
-        setToken={setToken}
+        tokenDispatch={tokenDispatch}
         token={token}
         username={username}
       />

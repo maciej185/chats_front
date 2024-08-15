@@ -8,14 +8,14 @@ import ChatAddMember from "./ChatAddMember";
 
 interface MainProps {
   setUsername: CallableFunction;
-  setToken: CallableFunction;
+  tokenDispatch: CallableFunction;
   token: string;
   username: string;
 }
 
 export default function Main({
   setUsername,
-  setToken,
+  tokenDispatch,
   token,
   username,
 }: MainProps) {
@@ -24,11 +24,15 @@ export default function Main({
       <Route path="/" element={<Chats token={token} />} />
       <Route
         path="/login"
-        element={<Login setUsername={setUsername} setToken={setToken} />}
+        element={
+          <Login setUsername={setUsername} tokenDispatch={tokenDispatch} />
+        }
       />
       <Route
         path="/register"
-        element={<Register setUsername={setUsername} setToken={setToken} />}
+        element={
+          <Register setUsername={setUsername} tokenDispatch={tokenDispatch} />
+        }
       />
       <Route path="/create" element={<ChatCreate token={token} />} />
       <Route
