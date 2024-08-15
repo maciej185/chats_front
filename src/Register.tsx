@@ -7,10 +7,13 @@ import { getBackendAddress } from "./utils";
 
 interface RegisterProps {
   setUsername: CallableFunction;
-  setToken: CallableFunction;
+  tokenDispatch: CallableFunction;
 }
 
-export default function Register({ setUsername, setToken }: RegisterProps) {
+export default function Register({
+  setUsername,
+  tokenDispatch,
+}: RegisterProps) {
   const [inputEmail, setInputEmail] = useState<string>("");
   const [inputUsername, setInputUsername] = useState<string>("");
   const [inputPassword, setInputPassword] = useState<string>("");
@@ -52,7 +55,7 @@ export default function Register({ setUsername, setToken }: RegisterProps) {
             inputPassword,
             error,
             setUsername,
-            setToken,
+            tokenDispatch,
             setError
           );
           navigate("/");

@@ -5,13 +5,17 @@ import "./styles/Nav.css";
 interface NavProps {
   username: string;
   setUsername: CallableFunction;
-  setToken: CallableFunction;
+  tokenDispatch: CallableFunction;
 }
 
-export default function Nav({ username, setUsername, setToken }: NavProps) {
+export default function Nav({
+  username,
+  setUsername,
+  tokenDispatch,
+}: NavProps) {
   function logoutHandleClick() {
     setUsername(null);
-    setToken(null);
+    tokenDispatch({ token_value: null });
 
     sessionStorage.removeItem("username");
     sessionStorage.removeItem("token");

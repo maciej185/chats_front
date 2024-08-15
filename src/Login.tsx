@@ -10,7 +10,7 @@ export async function login(
   password: string,
   error: string | null,
   usernameSetter: CallableFunction,
-  tokenSetter: CallableFunction,
+  tokenDispatch: CallableFunction,
   errorSetter: CallableFunction
 ) {
   const endpointUrl =
@@ -30,7 +30,7 @@ export async function login(
     const resJSON = await res.json();
     if (res.status === 200) {
       usernameSetter(username);
-      tokenSetter(resJSON.access_token);
+      tokenDispatch({ token_value: resJSON.access_token });
 
       sessionStorage.setItem("username", username);
       sessionStorage.setItem("token", resJSON.access_token);
@@ -49,10 +49,10 @@ export async function login(
 
 interface LoginProps {
   setUsername: CallableFunction;
-  setToken: CallableFunction;
+  tokenDispatch: CallableFunction;
 }
 
-export default function Login({ setUsername, setToken }: LoginProps) {
+export default function Login({ setUsername, tokenDispatch }: LoginProps) {
   const [inputUsername, setInputUsername] = useState<string>("");
   const [inputPassword, setInputPassword] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
@@ -66,7 +66,7 @@ export default function Login({ setUsername, setToken }: LoginProps) {
         inputPassword,
         error,
         setUsername,
-        setToken,
+        tokenDispatch,
         setError
       );
       if (loginSuccessful) navigate("/");
