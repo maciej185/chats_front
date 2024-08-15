@@ -38,19 +38,23 @@ export async function fetchChatData(
     getBackendAddress() +
     configData.GET_CHAT_ENDPOINT
   ).replace("chat_id", String(chat_id));
-  const res = await fetch(url, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-  const resData = await res.json();
-  if (res.status == 200) {
-    ChatInfoSetter(resData);
-    if (chatInfoError) ChatInfoSetter(null);
-    return;
-  } else {
+  try {
+    const res = await fetch(url, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
     const resData = await res.json();
-    ChatInfoErrorSetter(getErrorFromResponse(resData));
+    if (res.status == 200) {
+      ChatInfoSetter(resData);
+      if (chatInfoError) ChatInfoSetter(null);
+      return;
+    } else {
+      const resData = await res.json();
+      ChatInfoErrorSetter(getErrorFromResponse(resData));
+    }
+  } catch (e) {
+    ChatInfoErrorSetter("Network issues, please try again later.");
   }
 }
 
@@ -102,15 +106,18 @@ export async function fetchImage(
     getBackendAddress() +
     configData.GET_IMAGE_ENDPOINT
   ).replace("message_id", String(message_id));
-  const res = await fetch(url, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-  const resData = await res.blob();
-  if (res.status == 200) {
-    return new File([resData], `${message_id}.png`);
-  }
+  try {
+    const res = await fetch(url, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const resData = await res.blob();
+    if (res.status == 200) {
+      return new File([resData], `${message_id}.png`);
+    }
+  } catch (e) {}
+
   return null;
 }
 

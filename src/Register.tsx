@@ -25,39 +25,43 @@ export default function Register({ setUsername, setToken }: RegisterProps) {
     (async function () {
       const endpointUrl =
         "http://" + getBackendAddress() + configData.REGISTER_ENDPOINT;
-      const res = await fetch(endpointUrl, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          user_data: {
-            username: inputUsername,
-            email: inputEmail,
-            plain_text_password: inputPassword,
+      try {
+        const res = await fetch(endpointUrl, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
           },
-          profile_data: {
-            first_name: inputFirstName,
-            last_name: inputLastName,
-            date_of_birth: inputDateOfBirth,
-          },
-        }),
-      });
-      if (res.status == 201) {
-        setUsername(inputUsername);
-        if (error) setError(null);
-        await login(
-          inputUsername,
-          inputPassword,
-          error,
-          setUsername,
-          setToken,
-          setError
-        );
-        navigate("/");
-      } else {
-        const resJSON = await res.json();
-        setError(resJSON["detail"]);
+          body: JSON.stringify({
+            user_data: {
+              username: inputUsername,
+              email: inputEmail,
+              plain_text_password: inputPassword,
+            },
+            profile_data: {
+              first_name: inputFirstName,
+              last_name: inputLastName,
+              date_of_birth: inputDateOfBirth,
+            },
+          }),
+        });
+        if (res.status == 201) {
+          setUsername(inputUsername);
+          if (error) setError(null);
+          await login(
+            inputUsername,
+            inputPassword,
+            error,
+            setUsername,
+            setToken,
+            setError
+          );
+          navigate("/");
+        } else {
+          const resJSON = await res.json();
+          setError(resJSON["detail"]);
+        }
+      } catch (e) {
+        setError("Network issue, please try again later.");
       }
     })();
   };

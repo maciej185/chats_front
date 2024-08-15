@@ -34,21 +34,29 @@ async function fetchMessages(
       Authorization: `Bearer ${token}`,
     },
   });
-  const resData = await res.json();
-  if (res.status === 200) {
-    const messages = resData as Array<Message>;
+  try {
+    const resData = await res.json();
+    if (res.status === 200) {
+      const messages = resData as Array<Message>;
+      return {
+        status: res.status,
+        data: messages.reverse(),
+        error: null,
+      };
+    }
+
     return {
       status: res.status,
-      data: messages.reverse(),
-      error: null,
+      data: null,
+      error: getErrorFromResponse(resData),
+    };
+  } catch (e) {
+    return {
+      status: 400,
+      data: null,
+      error: "Network issues, please try again later",
     };
   }
-
-  return {
-    status: res.status,
-    data: null,
-    error: getErrorFromResponse(resData),
-  };
 }
 
 async function fetchImagesForMessageList(

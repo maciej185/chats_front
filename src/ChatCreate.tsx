@@ -30,21 +30,25 @@ export default function ChatCreate({ token }: ChatCreateProps) {
     (async function () {
       const url =
         "http://" + getBackendAddress() + configData.CREATE_CHAT_ENDPOINT;
-      const res = await fetch(url, {
-        method: "POST",
-        body: JSON.stringify({
-          name: inputName,
-        }),
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      if (res.status == 201) {
-        navigate("/");
-      } else {
-        const resData = await res.json();
-        setInputNameError(getErrorFromResponse(resData));
+      try {
+        const res = await fetch(url, {
+          method: "POST",
+          body: JSON.stringify({
+            name: inputName,
+          }),
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        if (res.status == 201) {
+          navigate("/");
+        } else {
+          const resData = await res.json();
+          setInputNameError(getErrorFromResponse(resData));
+        }
+      } catch (e) {
+        setInputNameError("Network issue, please try again later.");
       }
     })();
   };

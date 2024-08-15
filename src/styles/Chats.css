@@ -35,6 +35,11 @@
   cursor: pointer;
 }
 
+.chats-list-error {
+  padding: 0.5rem;
+  color: darkred;
+}
+
 .chats-create {
   padding: 0.75rem;
 }

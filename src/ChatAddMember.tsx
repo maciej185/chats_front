@@ -58,23 +58,27 @@ export default function ChatAddMember({ token, username }: ChatAddMemberProps) {
     (async function () {
       const url =
         "http://" + getBackendAddress() + configData.ADD_CHAT_MEMBER_ENDPOINT;
-      const res = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          user_id: selectedPotentialMember,
-          chat_id: chat_id,
-        }),
-      });
-      if (res.status == 201) {
-        navigate(`/chat/${chat_id}`);
-        return;
-      } else {
-        const resData = await res.json();
-        setAddMemberError(getErrorFromResponse(resData));
+      try {
+        const res = await fetch(url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            user_id: selectedPotentialMember,
+            chat_id: chat_id,
+          }),
+        });
+        if (res.status == 201) {
+          navigate(`/chat/${chat_id}`);
+          return;
+        } else {
+          const resData = await res.json();
+          setAddMemberError(getErrorFromResponse(resData));
+        }
+      } catch (e) {
+        setAddMemberError("Network issue, please try again later.");
       }
     })();
   };

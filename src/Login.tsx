@@ -18,31 +18,32 @@ export async function login(
   const data = new URLSearchParams();
   data.append("username", username);
   data.append("password", password);
-  const res = await fetch(endpointUrl, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
-      Accept: "application/json",
-    },
-    body: data,
-  });
-  const resJSON = await res.json();
-  if (res.status === 200) {
-    usernameSetter(username);
-    tokenSetter(resJSON.access_token);
+  try {
+    const res = await fetch(endpointUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        Accept: "application/json",
+      },
+      body: data,
+    });
+    const resJSON = await res.json();
+    if (res.status === 200) {
+      usernameSetter(username);
+      tokenSetter(resJSON.access_token);
 
-    sessionStorage.setItem("username", username);
-    sessionStorage.setItem("token", resJSON.access_token);
+      sessionStorage.setItem("username", username);
+      sessionStorage.setItem("token", resJSON.access_token);
 
-    if (error) errorSetter(null);
+      if (error) errorSetter(null);
 
-    return true;
-  } else if (res.status === 401) {
-    errorSetter(resJSON["detail"]);
-    return false;
-  } else {
-    errorSetter(resJSON["There was a network issue, please try again later."]);
-    return false;
+      return true;
+    } else {
+      errorSetter(resJSON["detail"]);
+      return false;
+    }
+  } catch (e) {
+    errorSetter("Network issue, please try again later.");
   }
 }
 
