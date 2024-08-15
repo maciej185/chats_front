@@ -37,19 +37,23 @@ async function fetchPotentialMembers(
     getBackendAddress() +
     configData.GET_POTENTIAL_CHAT_MEMBERS_ENDPOINT
   ).replace("chat_id", String(chat_id));
-  const res = await fetch(url, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-  const resData = await res.json();
-  if (res.status == 200) {
-    potentialMembersSetter(resData);
-    if (potentialMembersError) potentialMembersErrorSetter(null);
-    return;
-  } else {
+  try {
+    const res = await fetch(url, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
     const resData = await res.json();
-    potentialMembersErrorSetter(getErrorFromResponse(resData));
+    if (res.status == 200) {
+      potentialMembersSetter(resData);
+      if (potentialMembersError) potentialMembersErrorSetter(null);
+      return;
+    } else {
+      const resData = await res.json();
+      potentialMembersErrorSetter(getErrorFromResponse(resData));
+    }
+  } catch (e) {
+    potentialMembersErrorSetter("Network issue, please try again later.");
   }
 }
 
@@ -109,7 +113,9 @@ export default function ChatAddMembersSelect({
           ))}
         </select>
       ) : (
-        <div></div>
+        <div className="add-select-error">
+          Could not fetch potential members, try again later
+        </div>
       )}
     </div>
   );

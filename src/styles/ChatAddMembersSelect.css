@@ -1,3 +1,8 @@
+.add-select-error {
+  text-align: center;
+  color: darkred;
+}
+
 select.add-select-select {
   padding: 0.25rem 0.375rem;
   border-radius: 0.25rem;

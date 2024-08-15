@@ -9,40 +9,41 @@ interface ChatProps {
   token: string;
 }
 
-async function getChats(token: string) {
+interface GetChatsRespoonse {
+  error_detail?: string;
+  chats?: Array<{ chat_id: string; name: string }>;
+}
+
+async function getChats(token: string): Promise<GetChatsRespoonse> {
   const url = "http://" + getBackendAddress() + configData.GET_CHATS_ENDPOINT;
-  const res = await fetch(url, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-  if (res.status == 200) {
+  try {
+    const res = await fetch(url, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
     const resData = await res.json();
-    return resData;
-  } else {
-    return null;
+    return res.status === 200
+      ? { chats: resData }
+      : { error_detail: resData.detail };
+  } catch (e) {
+    return {
+      error_detail: "Network issues, try again later",
+    };
   }
 }
 
 export default function Chats({ token }: ChatProps) {
-  const [chats, setChats] = useState<Array<{
-    name: string;
-    chat_id: number;
-  }> | null>(null);
-  const [chatsError, setChatsError] = useState<string | null>(null);
+  const [chats, setChats] = useState<GetChatsRespoonse | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
     if (!token) navigate("/login");
     (async function () {
       const chats = await getChats(token);
-      if (chats === null) {
-        setChatsError("There was an error when fetching data");
-      } else {
-        setChats(chats);
-        if (chatsError) setChatsError(null);
-      }
+      setChats(chats);
     })();
+    console.log(chats);
   }, []);
 
   return (
@@ -50,15 +51,17 @@ export default function Chats({ token }: ChatProps) {
       <div className="chats-search"></div>
       <div className="chats-header">Your chats</div>
       <div className="chats-list">
-        {chats
-          ? chats.map((chat_object, ind) => (
-              <div key={`chat-${ind}`} className="chats-list-chat">
-                <Link to={`/chat/${chat_object.chat_id}`}>
-                  {chat_object.name}
-                </Link>
-              </div>
-            ))
-          : chatsError}
+        {chats?.chats ? (
+          chats.chats.map((chat_object, ind) => (
+            <div key={`chat-${ind}`} className="chats-list-chat">
+              <Link to={`/chat/${chat_object.chat_id}`}>
+                {chat_object.name}
+              </Link>
+            </div>
+          ))
+        ) : (
+          <div className="chats-list-error">{chats?.error_detail}</div>
+        )}
       </div>
       <div className="chats-create">
         <div className="chats-create-btn">
