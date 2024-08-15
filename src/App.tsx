@@ -8,8 +8,8 @@ export default function App() {
   const [token, setToken] = useState<string>("");
 
   useEffect(() => {
-    const usernameFromSessionStorage = localStorage.getItem("username");
-    const tokenFromSessionStorage = localStorage.getItem("token");
+    const usernameFromSessionStorage = sessionStorage.getItem("username");
+    const tokenFromSessionStorage = sessionStorage.getItem("token");
 
     if (usernameFromSessionStorage && tokenFromSessionStorage) {
       setUsername(usernameFromSessionStorage);

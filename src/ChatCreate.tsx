@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import "./styles/ChatCreate.css";
 import configData from "./config.json";
 import { getErrorFromResponse, getBackendAddress } from "./utils";
+import { useAuthenticate } from "./hooks";
 
 interface ChatCreateProps {
   token: string;
@@ -17,10 +18,7 @@ export default function ChatCreate({ token }: ChatCreateProps) {
   const [inputName, setInputName] = useState<string>("");
   const [inputNameError, setInputNameError] = useState<string | null>(null);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    if (!token) navigate("/login");
-  }, []);
+  useAuthenticate(token);
 
   const createBtnClickHandler: MouseEventHandler = (e) => {
     if (inputName === "") {
