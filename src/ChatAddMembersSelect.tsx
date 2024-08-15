@@ -5,7 +5,8 @@ import {
   FormEventHandler,
 } from "react";
 import configData from "./config.json";
-import { getErrorFromResponse } from "./utils";
+import { getErrorFromResponse, getBackendAddress } from "./utils";
+
 import "./styles/ChatAddMembersSelect.css";
 
 interface ChatAddMembersSelectProps {
@@ -32,9 +33,8 @@ async function fetchPotentialMembers(
   potentialMembersErrorSetter: CallableFunction
 ) {
   const url = (
-    configData.API_URL +
-    ":" +
-    configData.API_PORT +
+    "http://" +
+    getBackendAddress() +
     configData.GET_POTENTIAL_CHAT_MEMBERS_ENDPOINT
   ).replace("chat_id", String(chat_id));
   const res = await fetch(url, {

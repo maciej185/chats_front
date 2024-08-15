@@ -1,7 +1,7 @@
 import "./styles/ChatMessages.css";
 import { useState, useEffect, useRef } from "react";
 import configData from "./config.json";
-import { getErrorFromResponse } from "./utils";
+import { getErrorFromResponse, getBackendAddress } from "./utils";
 import { UIEvent } from "react";
 import { Message, fetchImage } from "./Chat";
 
@@ -25,9 +25,8 @@ async function fetchMessages(
 ): Promise<FetchMessagesRes> {
   const url =
     (
-      configData.API_URL +
-      ":" +
-      configData.API_PORT +
+      "http://" +
+      getBackendAddress() +
       configData.GET_MESSAGES_ENDPOINT
     ).replace("chat_id", chat_id) + `?index_from_the_top=${indexFromTheTop}`;
   const res = await fetch(url, {

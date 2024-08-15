@@ -7,7 +7,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import "./styles/ChatCreate.css";
 import configData from "./config.json";
-import { getErrorFromResponse } from "./utils";
+import { getErrorFromResponse, getBackendAddress } from "./utils";
 
 interface ChatCreateProps {
   token: string;
@@ -29,10 +29,7 @@ export default function ChatCreate({ token }: ChatCreateProps) {
     }
     (async function () {
       const url =
-        configData.API_URL +
-        ":" +
-        configData.API_PORT +
-        configData.CREATE_CHAT_ENDPOINT;
+        "http://" + getBackendAddress() + configData.CREATE_CHAT_ENDPOINT;
       const res = await fetch(url, {
         method: "POST",
         body: JSON.stringify({

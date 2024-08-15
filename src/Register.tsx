@@ -3,6 +3,7 @@ import { MouseEventHandler, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import configData from "./config.json";
 import { login } from "./Login";
+import { getBackendAddress } from "./utils";
 
 interface RegisterProps {
   setUsername: CallableFunction;
@@ -23,10 +24,7 @@ export default function Register({ setUsername, setToken }: RegisterProps) {
   const buttonHandleClick: MouseEventHandler = (e) => {
     (async function () {
       const endpointUrl =
-        configData.API_URL +
-        ":" +
-        configData.API_PORT +
-        configData.REGISTER_ENDPOINT;
+        "http://" + getBackendAddress() + configData.REGISTER_ENDPOINT;
       const res = await fetch(endpointUrl, {
         method: "POST",
         headers: {

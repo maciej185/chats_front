@@ -1,6 +1,7 @@
 import configData from "./config.json";
 import { MouseEventHandler, useState } from "react";
 import "./styles/Login.css";
+import { getBackendAddress } from "./utils";
 
 import { useNavigate, Link } from "react-router-dom";
 
@@ -13,7 +14,7 @@ export async function login(
   errorSetter: CallableFunction
 ) {
   const endpointUrl =
-    configData.API_URL + ":" + configData.API_PORT + configData.LOGIN_ENDPOINT;
+    "http://" + getBackendAddress() + configData.LOGIN_ENDPOINT;
   const data = new URLSearchParams();
   data.append("username", username);
   data.append("password", password);

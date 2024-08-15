@@ -8,4 +8,5 @@ COPY package.json /front/
 COPY tsconfig.json /front/
 
 RUN npm install
+RUN npm run build
 CMD ["npm", "start"]
