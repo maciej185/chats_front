@@ -50,9 +50,14 @@ export async function login(
 interface LoginProps {
   setUsername: CallableFunction;
   tokenDispatch: CallableFunction;
+  admin?: Boolean;
 }
 
-export default function Login({ setUsername, tokenDispatch }: LoginProps) {
+export default function Login({
+  setUsername,
+  tokenDispatch,
+  admin = false,
+}: LoginProps) {
   const [inputUsername, setInputUsername] = useState<string>("");
   const [inputPassword, setInputPassword] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
@@ -69,7 +74,7 @@ export default function Login({ setUsername, tokenDispatch }: LoginProps) {
         tokenDispatch,
         setError
       );
-      if (loginSuccessful) navigate("/");
+      if (loginSuccessful) navigate(admin ? "/admin" : "/");
     })();
   };
 
