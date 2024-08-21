@@ -12,5 +12,6 @@
   "NUMBER_OF_MESSAGES_PER_FETCH": 10,
   "CHAT_WS_URL": "/chat/chat_id",
   "GET_IMAGE_ENDPOINT": "/chat/image/message_id",
-  "IS_ADMIN_ENDPOINT": "/admin/is_admin"
+  "IS_ADMIN_ENDPOINT": "/admin/is_admin",
+  "GET_TABLES_ENDPOINT": "/admin/tables"
 }

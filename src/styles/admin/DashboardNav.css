@@ -1,0 +1,40 @@
+.dashboard_nav > div:not(div:last-of-type) {
+  margin-bottom: 0.5rem;
+}
+
+.dashboard_nav-section > div:not(div:last-of-type) {
+  margin-bottom: 0.5rem;
+}
+
+.dashboard_nav-section-header {
+  font-size: 1.25rem;
+  font-weight: 300;
+}
+
+.dashboard_nav-section-list > div:not(div:last-of-type) {
+  margin-bottom: 0.25rem;
+}
+
+.dashboard_nav-section-list-item {
+  padding: 0.375rem;
+  transition: 0.3s;
+  border-radius: 0.25rem;
+  cursor: pointer;
+}
+
+.dashboard_nav-section-list-item_inactive:hover {
+  box-shadow: 0 0 0 1px lightgray inset;
+}
+
+.dashboard_nav-section-list-item_active {
+  border: 1px solid gray;
+  font-weight: 600;
+}
+
+.dashboard_nav-section-list-item_active:hover {
+  border: unset;
+}
+
+.hidden {
+  display: none;
+}

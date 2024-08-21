@@ -1,0 +1,20 @@
+.dashboard {
+  border: 1px solid #000000;
+  display: flex;
+  width: 90vw;
+  border-radius: 0.5rem;
+  padding: 0 0.5rem;
+}
+
+.dashboard > div:first-of-type {
+  flex: 2;
+  border-right: 1px solid black;
+}
+
+.dashboard > div:last-of-type {
+  flex: 7;
+}
+
+.dashboard > div {
+  padding: 0.5rem;
+}
